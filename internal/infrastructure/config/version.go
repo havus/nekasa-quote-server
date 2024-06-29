@@ -1,21 +1,26 @@
 package config
 
 import (
-	"io/ioutil"
+	"bufio"
 	"log"
 	"os"
+	"strings"
 )
 
 func LoadVersion() string {
-	versionFile := "version"
-	if _, err := os.Stat(versionFile); os.IsNotExist(err) {
-		log.Fatalf("Version file does not exist: %v", err)
-	}
-
-	version, err := ioutil.ReadFile(versionFile)
+	file, err := os.Open("version")
 	if err != nil {
-		log.Fatalf("Failed to read version file: %v", err)
+		log.Printf("Error reading version file: %v", err)
+		return "unknown"
 	}
+	defer file.Close()
 
-	return string(version)
+	scanner := bufio.NewScanner(file)
+	if scanner.Scan() {
+		return strings.TrimSpace(scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		log.Printf("Error scanning version file: %v", err)
+	}
+	return "unknown"
 }

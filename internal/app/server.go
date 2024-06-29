@@ -5,19 +5,22 @@ import (
 	"strings"
 
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/config"
+	"github.com/havus/nekasa-quote-server/internal/infrastructure/logger"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/api"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/middleware"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 type Server struct {
 	Engine *gin.Engine
 	Config *config.Config
+	Logger *logger.Logger
 }
 
-func NewServer(config *config.Config) *Server {
+func NewServer(config *config.Config, logger *logger.Logger) *Server {
 	engine := gin.New()
 
 	// Set trusted proxies
@@ -25,12 +28,14 @@ func NewServer(config *config.Config) *Server {
 		engine.SetTrustedProxies(strings.Split(config.TrustedProxies[0], ","))
 	}
 
-	engine.Use(middleware.AuthMiddleware())
-	api.RegisterHealthRoutes(engine)
+	engine.Use(logger.GinMiddleware())      // Menggunakan middleware logger
+	engine.Use(middleware.AuthMiddleware()) // Menggunakan middleware auth
+	api.RegisterHealthRoutes(engine)        // Register endpoint /health
 
 	return &Server{
 		Engine: engine,
 		Config: config,
+		Logger: logger,
 	}
 }
 
@@ -44,4 +49,8 @@ func StartServer(lc fx.Lifecycle, server *Server) {
 			return nil
 		},
 	})
+}
+
+func NewLogger() (*zap.Logger, error) {
+	return zap.NewProduction()
 }

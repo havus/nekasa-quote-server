@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Port           string
 	TrustedProxies []string
+	Version        string
 }
 
 func LoadConfig() *Config {
@@ -22,6 +23,7 @@ func LoadConfig() *Config {
 	config := &Config{
 		Port:           viper.GetString("PORT"),
 		TrustedProxies: viper.GetStringSlice("TRUSTED_PROXIES"),
+		Version:        LoadVersion(),
 	}
 	return config
 }

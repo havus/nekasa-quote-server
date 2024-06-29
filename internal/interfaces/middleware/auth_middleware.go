@@ -6,7 +6,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Implementasi middleware
+		// Middleware implementation here
 		c.Next()
 	}
 }

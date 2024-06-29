@@ -11,6 +11,7 @@ type Config struct {
 	Port           string
 	TrustedProxies []string
 	Version        string
+	EnvMode        string
 }
 
 func LoadConfig() *Config {
@@ -20,10 +21,13 @@ func LoadConfig() *Config {
 
 	viper.AutomaticEnv()
 
+	configEnv := viper.GetString("CONFIG_ENV")
+
 	config := &Config{
 		Port:           viper.GetString("PORT"),
 		TrustedProxies: viper.GetStringSlice("TRUSTED_PROXIES"),
 		Version:        LoadVersion(),
+		EnvMode:        configEnv,
 	}
 	return config
 }

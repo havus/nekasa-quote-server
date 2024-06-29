@@ -8,14 +8,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/config"
+	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 type Logger struct {
-	zapLogger *zap.Logger
+	config    *config.Config
 	hostname  string
 	version   string
+	zapLogger *zap.Logger
 }
 
 func NewLogger(cfg *config.Config) *Logger {
@@ -31,10 +33,15 @@ func NewLogger(cfg *config.Config) *Logger {
 		zapLogger: zapLogger,
 		hostname:  hostname,
 		version:   cfg.Version,
+		config:    cfg,
 	}
 }
 
 func (l *Logger) GeneralLog(level, caller, msg string, tags map[string]interface{}) {
+	if level == "debug" && l.config.EnvMode == "PRODUCTION" {
+		return
+	}
+
 	entry := make(map[string]interface{})
 	entry["level"] = level
 	entry["message"] = msg
@@ -85,4 +92,8 @@ func (l *Logger) GinMiddleware() gin.HandlerFunc {
 		log, _ = json.Marshal(entry)
 		fmt.Println(string(log))
 	}
+}
+
+func (l *Logger) FxLogger() fxevent.Logger {
+	return &fxevent.ZapLogger{Logger: l.zapLogger}
 }

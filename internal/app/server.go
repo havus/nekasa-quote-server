@@ -21,6 +21,12 @@ type Server struct {
 }
 
 func NewServer(config *config.Config, logger *logger.Logger) *Server {
+	ginMode := gin.DebugMode
+	if config.EnvMode == "PRODUCTION" {
+		ginMode = gin.ReleaseMode
+	}
+	gin.SetMode(ginMode)
+
 	engine := gin.New()
 
 	// Set trusted proxies
@@ -28,9 +34,9 @@ func NewServer(config *config.Config, logger *logger.Logger) *Server {
 		engine.SetTrustedProxies(strings.Split(config.TrustedProxies[0], ","))
 	}
 
-	engine.Use(logger.GinMiddleware())      // Menggunakan middleware logger
-	engine.Use(middleware.AuthMiddleware()) // Menggunakan middleware auth
-	api.RegisterHealthRoutes(engine)        // Register endpoint /health
+	engine.Use(logger.GinMiddleware())
+	engine.Use(middleware.AuthMiddleware())
+	api.RegisterHealthRoutes(engine)
 
 	return &Server{
 		Engine: engine,
@@ -42,10 +48,17 @@ func NewServer(config *config.Config, logger *logger.Logger) *Server {
 func StartServer(lc fx.Lifecycle, server *Server) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
+			server.Logger.GeneralLog(
+				"info",
+				"internal/app/server.StartServer",
+				"Server is starting on port "+server.Config.Port,
+				nil,
+			)
 			go server.Engine.Run(":" + server.Config.Port)
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			server.Logger.GeneralLog("info", "StartServer", "Server is stopping", nil)
 			return nil
 		},
 	})

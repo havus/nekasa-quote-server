@@ -29,6 +29,10 @@ Navigate to the project directory and install the required Go modules:
 > go mod download
 ```
 
+
+#### 3. Configure the environment
+Create a `.env` file in the root directory of the project and add your environment-specific variables. An example `.env` file might look like `.env.template`.
+
 #### Database
 
 We are using [golang-migrate/migrate](https://github.com/golang-migrate/migrate) to handle migrations.
@@ -47,12 +51,12 @@ mysql> CREATE DATABASE nekasa_quotes;
 
 **Run migration**:<br>
 ```bash
-> $GOPATH/bin/migrate -database "mysql://root:password@tcp(localhost:3306)/nekasa_quotes" -path internal/infrastructure/database/migrations up
+> bin/migrate.sh up
 ```
 
 **Add migration**:<br>
 ```bash
-> $GOPATH/bin/migrate create -ext sql -dir internal/infrastructure/database/migrations create_table_users
+> ./bin/create_migration.sh create_table_users
 ```
 
 **Inspect schema migration**:<br>
@@ -65,9 +69,6 @@ SELECT
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA='nekasa_quotes' AND TABLE_NAME='users';
 ```
-
-#### 3. Configure the environment
-Create a `.env` file in the root directory of the project and add your environment-specific variables. An example `.env` file might look like `.env.template`.
 
 
 #### 4. Run the application

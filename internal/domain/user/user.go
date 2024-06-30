@@ -12,7 +12,6 @@ type User struct {
 	MiddleName          string         `gorm:"column:middle_name"`
 	LastName            string         `gorm:"column:last_name"`
 	Email               string         `gorm:"column:email;unique"`
-	UnconfirmedEmail    string         `gorm:"column:unconfirmed_email"`
 	Status              int            `gorm:"column:status"`
 	EmailVerified       bool           `gorm:"column:email_verified"`
 	PhoneVerified       bool           `gorm:"column:phone_verified"`

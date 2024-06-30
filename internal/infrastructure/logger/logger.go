@@ -45,7 +45,7 @@ func (l *Logger) GeneralLog(level, caller, msg string, tags map[string]interface
 	entry := make(map[string]interface{})
 	entry["level"] = level
 	entry["message"] = msg
-	entry["timestamp"] = time.Now().Format(time.RFC3339)
+	entry["timestamp"] = time.Now().UTC().Format(time.RFC3339)
 	entry["resource"] = map[string]interface{}{
 		"hostname": l.hostname,
 		"version":  l.version,
@@ -59,7 +59,7 @@ func (l *Logger) GeneralLog(level, caller, msg string, tags map[string]interface
 
 func (l *Logger) GinMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		start := time.Now()
+		start := time.Now().UTC()
 
 		entry := make(map[string]interface{})
 		entry["level"] = "INFO"

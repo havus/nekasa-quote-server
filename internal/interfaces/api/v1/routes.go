@@ -7,7 +7,9 @@ import (
 )
 
 func RegisterRoutes(router *gin.Engine, userService user.UserService) {
-	v1 := router.Group("/v1")
+	api := router.Group("/api")
+	v1 := api.Group("/v1")
+
 	userHandler := NewUserHandler(userService)
 
 	v1.POST("/sign-in", userHandler.SignIn)

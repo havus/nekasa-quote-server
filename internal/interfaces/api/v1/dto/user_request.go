@@ -1,14 +1,16 @@
 package dto
 
 type SignUpRequest struct {
-	FirstName         string `json:"first_name" binding:"required"`
+	Username          string `json:"username" validate:"required"`
+	FirstName         string `json:"first_name" validate:"required"`
 	MiddleName        string `json:"middle_name"`
-	LastName          string `json:"last_name" binding:"required"`
-	Email             string `json:"email" binding:"required"`
-	EncryptedPassword string `json:"password" binding:"required"`
+	LastName          string `json:"last_name" validate:"required"`
+	Email             string `json:"email" validate:"required,email"`
+	EncryptedPassword string `json:"password" validate:"required"`
+	Phone             string `json:"phone"`
 }
 
 type SignInRequest struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }

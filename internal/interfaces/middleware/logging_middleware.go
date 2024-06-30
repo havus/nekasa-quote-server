@@ -12,13 +12,13 @@ import (
 
 func LoggingMiddleware(logger *zap.Logger, cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		start := time.Now()
+		start := time.Now().UTC()
 
 		logger.Info("incoming request",
 			zap.String("level", "INFO"),
 			zap.String("msg", "incoming request"),
-			zap.String("timestamp", time.Now().Format(time.RFC3339Nano)),
-			zap.String("caller", "middleware/logging_middleware.go:20"),
+			zap.String("timestamp", time.Now().UTC().Format(time.RFC3339Nano)),
+			zap.String("caller", "middleware/logging_middleware.LoggingMiddleware#before_request"),
 			zap.Object("resource", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
 				enc.AddString("hostname", c.Request.Host)
 				enc.AddString("version", cfg.Version)
@@ -42,8 +42,8 @@ func LoggingMiddleware(logger *zap.Logger, cfg *config.Config) gin.HandlerFunc {
 		logger.Info("completed request",
 			zap.String("level", "INFO"),
 			zap.String("msg", "completed request"),
-			zap.String("timestamp", time.Now().Format(time.RFC3339Nano)),
-			zap.String("caller", "middleware/logging_middleware.go:39"),
+			zap.String("timestamp", time.Now().UTC().Format(time.RFC3339Nano)),
+			zap.String("caller", "middleware/logging_middleware.LoggingMiddleware#after_request"),
 			zap.Object("resource", zapcore.ObjectMarshalerFunc(func(enc zapcore.ObjectEncoder) error {
 				enc.AddString("hostname", c.Request.Host)
 				enc.AddString("version", cfg.Version)

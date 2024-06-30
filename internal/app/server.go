@@ -6,7 +6,6 @@ import (
 
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/config"
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/logger"
-	"github.com/havus/nekasa-quote-server/internal/interfaces/api"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/middleware"
 	"gorm.io/gorm"
 
@@ -38,7 +37,6 @@ func NewServer(config *config.Config, logger *logger.Logger, db *gorm.DB) *Serve
 
 	engine.Use(logger.GinMiddleware())
 	engine.Use(middleware.AuthMiddleware())
-	api.RegisterHealthRoutes(engine)
 
 	return &Server{
 		Engine: engine,

@@ -83,6 +83,11 @@ To run the tests, use the following command:
 ```
 This will execute all the tests in the project and display the results.
 
+
+### Definitions
+DTO: Data Transfer Object
+
+
 ### Contributing
 
 We welcome contributions to the nekasa-quote-server project. If you have an idea for a new feature or have found a bug, please open an issue or submit a pull request.

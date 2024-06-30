@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/havus/nekasa-quote-server/internal/domain/user"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/api/v1/dto"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {

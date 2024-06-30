@@ -5,10 +5,10 @@ import (
 	"errors"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/havus/nekasa-quote-server/internal/domain/user"
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/logger"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserServiceImpl struct {

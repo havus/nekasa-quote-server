@@ -22,7 +22,7 @@ func (h *UserHandler) SignUp(c *gin.Context) {
 	var req dto.SignUpRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Errors: []string{"Invalid request"}})
 		return
 	}
 
@@ -36,27 +36,28 @@ func (h *UserHandler) SignUp(c *gin.Context) {
 	}
 
 	if err := h.userService.SignUp(ctx, newUser); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Errors: []string{err.Error()}})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Sign up successful", "user": dto.NewUserResponse(newUser)})
+	c.JSON(http.StatusOK, dto.SignUpResponse{Message: "Sign up successful", User: dto.NewUserResponse(newUser)})
 }
 
 func (h *UserHandler) SignIn(c *gin.Context) {
 	var req dto.SignInRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Errors: []string{"Invalid request"}})
 		return
 	}
 
 	ctx := context.Background()
 	user, err := h.userService.SignIn(ctx, req.Email, req.Password)
+
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Errors: []string{"Invalid credentials"}})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Sign in successful", "user": dto.NewUserResponse(user)})
+	c.JSON(http.StatusOK, dto.SignInResponse{Message: "Sign in successful", User: dto.NewUserResponse(user)})
 }

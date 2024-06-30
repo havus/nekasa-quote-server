@@ -11,6 +11,20 @@ type UserResponse struct {
 	EncryptedPassword string `json:"-"`
 }
 
+type SignUpResponse struct {
+	Message string        `json:"message"`
+	User    *UserResponse `json:"user"`
+}
+
+type SignInResponse struct {
+	Message string        `json:"message"`
+	User    *UserResponse `json:"user"`
+}
+
+type ErrorResponse struct {
+	Errors []string `json:"errors"`
+}
+
 func NewUserResponse(u *user.User) *UserResponse {
 	return &UserResponse{
 		ID:                u.ID,

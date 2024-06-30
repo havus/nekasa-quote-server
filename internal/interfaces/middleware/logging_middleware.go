@@ -15,7 +15,7 @@ func LoggingMiddleware(logger *zap.Logger, cfg *config.Config) gin.HandlerFunc {
 		start := time.Now()
 
 		logger.Info("incoming request",
-			zap.String("level", "info"),
+			zap.String("level", "INFO"),
 			zap.String("msg", "incoming request"),
 			zap.String("timestamp", time.Now().Format(time.RFC3339Nano)),
 			zap.String("caller", "middleware/logging_middleware.go:20"),
@@ -40,7 +40,7 @@ func LoggingMiddleware(logger *zap.Logger, cfg *config.Config) gin.HandlerFunc {
 		status := c.Writer.Status()
 
 		logger.Info("completed request",
-			zap.String("level", "info"),
+			zap.String("level", "INFO"),
 			zap.String("msg", "completed request"),
 			zap.String("timestamp", time.Now().Format(time.RFC3339Nano)),
 			zap.String("caller", "middleware/logging_middleware.go:39"),

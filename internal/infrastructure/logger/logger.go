@@ -62,7 +62,7 @@ func (l *Logger) GinMiddleware() gin.HandlerFunc {
 		start := time.Now()
 
 		entry := make(map[string]interface{})
-		entry["level"] = "info"
+		entry["level"] = "INFO"
 		entry["message"] = "request started"
 		entry["timestamp"] = start.Format(time.RFC3339)
 		entry["resource"] = map[string]interface{}{

@@ -8,6 +8,7 @@ import (
 	"github.com/havus/nekasa-quote-server/internal/infrastructure/logger"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/api"
 	"github.com/havus/nekasa-quote-server/internal/interfaces/middleware"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
@@ -18,9 +19,10 @@ type Server struct {
 	Engine *gin.Engine
 	Config *config.Config
 	Logger *logger.Logger
+	DB     *gorm.DB
 }
 
-func NewServer(config *config.Config, logger *logger.Logger) *Server {
+func NewServer(config *config.Config, logger *logger.Logger, db *gorm.DB) *Server {
 	ginMode := gin.DebugMode
 	if config.EnvMode == "PRODUCTION" {
 		ginMode = gin.ReleaseMode
@@ -42,6 +44,7 @@ func NewServer(config *config.Config, logger *logger.Logger) *Server {
 		Engine: engine,
 		Config: config,
 		Logger: logger,
+		DB:     db,
 	}
 }
 
@@ -49,16 +52,20 @@ func StartServer(lc fx.Lifecycle, server *Server) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			server.Logger.GeneralLog(
-				"info",
+				"INFO",
 				"internal/app/server.StartServer",
 				"Server is starting on port "+server.Config.Port,
 				nil,
 			)
-			go server.Engine.Run(":" + server.Config.Port)
+			go func() {
+				if err := server.Engine.Run(":" + server.Config.Port); err != nil {
+					server.Logger.GeneralLog("ERROR", "StartServer", "Failed to start server", map[string]interface{}{"error": err})
+				}
+			}()
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			server.Logger.GeneralLog("info", "StartServer", "Server is stopping", nil)
+			server.Logger.GeneralLog("INFO", "StartServer", "Server is stopping", nil)
 			return nil
 		},
 	})
